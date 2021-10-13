@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+    <script src="jquery-3.3.1.min.js"></script>
+    <script>
+
+        /*
+            重點: 
+
+                1.使用$.parseHTML解析從links.html回傳的字串，
+                因為回傳的字串是body跟head裡的元素的集合，不好處理，
+                所以先append到一個元素裡。
+                
+        */
+        $(function(){
+            $.get('links.html?A=1').done(function(response){
+                getLinks(response);
+            });
+        })
+
+        function getLinks(responseHTML){
+            let container = $('<div></div>').append(responseHTML);
+
+            $(container).children('a[href]').each(function(index, item){
+                $.get($(item).attr('href')).done(function(response){
+                    sendToSave($(item).html(),response);
+                });
+            });
+        }
+        function sendToSave(filename, content){
+            $.post('save.php',{
+                filetype: 'html',
+                filename: filename,
+                content: content,
+            });
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>

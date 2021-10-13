@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+    <script>
+        /*
+            重點:
+                *1.使用let宣告xhttp跟item，這樣每一個xhttp就不會重複
+                
+                *2.傳送的html資料，如果有html特殊字元編碼(像是&nbsp;)，
+                就要使用encodeURIComponent(data)。
+
+                *3.使用DOMParse來解析從links.html傳回的string變成DOM，
+                然後交給getLinks來做遍歷。
+
+                4.xmlhttprequest傳送post資料時要setRequestHeader()。
+
+                5.適時的在request的url後隨便加上一點query(像是?a=1)
+                可以避免回傳的是緩存的結果。
+        */
+       
+
+        window.onload = function(){
+            let xhttp = new XMLHttpRequest();
+            let parser = new DOMParser();
+
+            xhttp.open('get','links.html?a=1');
+            xhttp.send();
+            xhttp.onreadystatechange = function(){
+                if(xhttp.readyState == 4 && xhttp.status == 200){
+                    getLinks(parser.parseFromString(xhttp.responseText,'text/html'));
+                }
+            }    
+        }
+
+        function getLinks(responseHTML){
+            for(let item of responseHTML.getElementsByTagName('a')){
+                 let xhttp = new XMLHttpRequest();
+                xhttp.open('get',item.href + "?a=1");
+                xhttp.send();
+                xhttp.onreadystatechange = function(){
+                    if(xhttp.readyState == 4 && xhttp.status == 200){
+                        saveRequest(item.innerText,xhttp.response);
+                    }
+                }
+            }
+        }
+        function saveRequest(filename, content){
+            var xhttp = new XMLHttpRequest();
+            xhttp.open('post','save.php');
+            xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhttp.send('filename='+ filename +'&filetype=html&content='+ encodeURIComponent(content));
+            
+        }
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
+
