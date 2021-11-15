@@ -1,11 +1,11 @@
 # download-site-tool (June 12, 2018)
-**<u>This is for practicing.</u>**
+**<u>This project is for practicing.</u>**
 
 You can use it to download websites' content with a website list automatically. 
 
 There are 3 versions.
 
-Notes are below.
+## Some Note
 
     1: Create with Pure Javascript. It has most of important features. 
     But bacause Cross-Origin problem, it only can use in local network.
